@@ -21,7 +21,7 @@ class TransactionsToFireflySender
      */
     public function __construct(array $transactions, string $firefly_url, string $firefly_access_token, 
                                 int $firefly_account_id,
-                                string $regex_match, string $regex_replace)
+                                string $regex_match, string $regex_replace, string $ignore_iban)
     {
         $this->transactions         = $transactions;
         $this->firefly_url          = $firefly_url;
@@ -29,6 +29,7 @@ class TransactionsToFireflySender
         $this->firefly_account_id   = $firefly_account_id;
         $this->regex_match          = $regex_match;
         $this->regex_replace        = $regex_replace;
+        $this->ignore_iban          = $ignore_iban;
 
         $firefly_accounts_request = new GetAccountsRequest($this->firefly_url, $this->firefly_access_token);
         $firefly_accounts_request->setType(GetAccountsRequest::ASSET);
@@ -55,7 +56,12 @@ class TransactionsToFireflySender
         $debitOrCredit = $transaction->getCreditDebit();
         $amount        = $transaction->getAmount();
         $source        = array('id' => $firefly_account_id);
-        $destination   = array('iban' => self::get_iban($transaction), 'name' => $transaction->getName());
+        $iban = self::get_iban($transaction);
+        //echo $iban."\n";
+        if($iban == $ignore_iban){ $iban = ""; }
+//        $destination   = array('iban' => self::get_iban($transaction), 'name' => $transaction->getName());
+        $destination   = array( 'iban' => $iban, 'name' => $transaction->getName());
+
 
         $firefly_accounts->rewind();
         for ($acc = $firefly_accounts->current(); $firefly_accounts->valid(); $acc = $firefly_accounts->current()) {

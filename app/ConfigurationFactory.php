@@ -19,6 +19,7 @@ class Configuration {
     public $choose_account_to;
     public $description_regex_match;
     public $description_regex_replace;
+    public $ignore_iban;
 }
 
 class ConfigurationFactory
@@ -43,14 +44,18 @@ class ConfigurationFactory
             $configuration->firefly_account_id      = $contentArray["choose_account_automation"]["firefly_account_id"];
             $configuration->choose_account_from     = $contentArray["choose_account_automation"]["from"];
             $configuration->choose_account_to       = $contentArray["choose_account_automation"]["to"];
+            $configuration->ignore_iban             = $contentArray["choose_account_automation"]["ignore_iban"];
+
         } else {
             $configuration->bank_account_iban = NULL;
             $configuration->firefly_account_id = NULL;
             $configuration->choose_account_from = NULL;
             $configuration->choose_account_to = NULL;
+            $configuration->ignore_iban = NULL;
         }
         $configuration->description_regex_match   = $contentArray["description_regex_match"];
         $configuration->description_regex_replace = $contentArray["description_regex_replace"];
+
 
         return $configuration;
     }

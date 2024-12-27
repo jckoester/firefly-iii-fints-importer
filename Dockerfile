@@ -4,7 +4,7 @@ RUN apk add composer git
 
 COPY . .
 
-RUN rm -f /data/configurations/*
+RUN rm -rf /data/configurations/*
 
 RUN composer install --no-dev
 RUN composer clearcache
